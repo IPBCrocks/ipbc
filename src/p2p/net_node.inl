@@ -392,7 +392,7 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("127.0.0.1:34281");
+      full_addrs.insert("testnet-seed.ipbc.rocks:34281");
     }
     else if (nettype == cryptonote::STAGENET)
     {
