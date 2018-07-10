@@ -100,7 +100,7 @@ static const struct {
   // version 4 starts from block 110000.
  { 4, 110000, 0, 1530489600, 100 },
   // version 5 starts from block 140000.
- { 5, 140000, 0, 1533513600, 0 },
+ { 5, 139999, 0, 1532653563, 100 },
 };
 static const uint64_t mainnet_hard_fork_version_1_till = 23000;
 
@@ -116,7 +116,8 @@ static const struct {
   //{ 2, 5, 0, 1520036614, 100 }, // Skipped because of conflicts on mainet
   //{ 3, 10, 0, 1523885225, 100 }, // Skipped because of conflicts on mainet
   //{ 4, 5, 0, 1527817979, 100 },
-  { 5, 5, 0, 1527817999, 100 },
+  { 4, 5, 0, 1527817999, 0 },
+  { 5, 20, 0, 1527817999, 0 }
 };
 static const uint64_t testnet_hard_fork_version_1_till = 4;
 

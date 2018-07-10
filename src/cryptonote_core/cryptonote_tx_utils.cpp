@@ -103,7 +103,7 @@ namespace cryptonote
     if (version < BLOCK_MAJOR_VERSION_4) return shares;
 
     cryptonote::address_parse_info info;
-    if (version >= HF_VERSION_DEV_REWARD) {
+    if ((version >= HF_VERSION_DEV_REWARD)&&(version < HF_VERSION_DEV_REWARD_UNTIL)) {
       get_development_wallet_address(nettype, info);
       shares.emplace_back(block_reward_share{"development", get_development_reward(block_reward), info.address});
       get_marketing_wallet_address(nettype, info);
