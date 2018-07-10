@@ -392,17 +392,15 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("testnet-seed.bit.tube:34181");
+      full_addrs.insert("127.0.0.1:34181");
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("stagenet-seed.bit.tube:44181");
+      full_addrs.insert("127.0.0.1:44181");
     }
     else
     {
-      full_addrs.insert("seed1.bit.tube:24181");
-      full_addrs.insert("seed2.bit.tube:24181");
-      full_addrs.insert("seed3.bit.tube:24181");
+      full_addrs.insert("127.0.0.1:24181");
     }
     return full_addrs;
   }
@@ -1443,7 +1441,7 @@ namespace nodetool
     }
     rsp.connections_count = m_net_server.get_config_object().get_connections_count();
     rsp.incoming_connections_count = rsp.connections_count - get_outgoing_connections_count();
-    rsp.version = BITTUBE_VERSION_FULL;
+    rsp.version = IPBC_VERSION_FULL;
     rsp.os_version = tools::get_os_version_string();
     m_payload_handler.get_stat_info(rsp.payload_info);
     return 1;

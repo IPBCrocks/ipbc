@@ -1,9 +1,9 @@
-BitTube daemon internationalization
+IPBC daemon internationalization
 ==================================
 
-The BitTube command line tools can be translated in various languages.
+The ipbc command line tools can be translated in various languages.
 
-In order to use the same translation workflow as the [BitTube GUI Wallet](https://github.com/ipbc-dev/bittube-gui), they use Qt Linguist translation files.  However, to avoid the dependencies on Qt this normally implies, they use a custom loader to read those files at runtime.
+In order to use the same translation workflow as the [IPBC GUI Wallet](https://github.com/muncoin/ipbc-gui), they use Qt Linguist translation files.  However, to avoid the dependencies on Qt this normally implies, they use a custom loader to read those files at runtime.
 
 ### Tools for translators
 
@@ -31,7 +31,7 @@ To build translations after modifying them:
 
 To test a translation:
 
-    LANG=es ./build/release/bin/bittube-wallet-cli
+    LANG=es ./build/release/bin/ipbc-wallet-cli
 
 To add new translatable strings in the source code:
 

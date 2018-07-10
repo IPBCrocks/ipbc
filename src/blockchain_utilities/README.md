@@ -1,7 +1,6 @@
-# BitTube Blockchain Utilities
+# IPBC Blockchain Utilities
 
 Copyright (c) 2014-2018, The Monero Project
-Copyright (c) 2018, The BitTube Project
 Copyright (c) 2018, The BitTube Project
 
 ## Introduction
@@ -14,16 +13,16 @@ See also each utility's "--help" option.
 
 ### Export an existing blockchain database
 
-`$ bittube-blockchain-export`
+`$ ipbc-blockchain-export`
 
-This loads the existing blockchain and exports it to `$BITTUBE_DATA_DIR/export/blockchain.raw`
+This loads the existing blockchain and exports it to `$IPBC_DATA_DIR/export/blockchain.raw`
 
 ### Import the exported file
 
-`$ bittube-blockchain-import`
+`$ ipbc-blockchain-import`
 
-This imports blocks from `$BITTUBE_DATA_DIR/export/blockchain.raw` (exported using the
-`bittube-blockchain-export` tool as described above) into the current database.
+This imports blocks from `$IPBC_DATA_DIR/export/blockchain.raw` (exported using the
+`ipbc-blockchain-export` tool as described above) into the current database.
 
 Defaults: `--batch on`, `--batch size 20000`, `--verify on`
 
@@ -32,14 +31,14 @@ Batch size refers to number of blocks and can be adjusted for performance based 
 Verification should only be turned off if importing from a trusted blockchain.
 
 If you encounter an error like "resizing not supported in batch mode", you can just re-run
-the `bittube-blockchain-import` command again, and it will restart from where it left off.
+the `ipbc-blockchain-import` command again, and it will restart from where it left off.
 
 ```bash
 ## use default settings to import blockchain.raw into database
-$ bittube-blockchain-import
+$ ipbc-blockchain-import
 
 ## fast import with large batch size, database mode "fastest", verification off
-$ bittube-blockchain-import --batch-size 20000 --database lmdb#fastest --verify off
+$ ipbc-blockchain-import --batch-size 20000 --database lmdb#fastest --verify off
 
 ```
 
@@ -82,9 +81,9 @@ LMDB flags (more than one may be specified):
 ## Examples:
 
 ```
-$ bittube-blockchain-import --database lmdb#fastest
+$ ipbc-blockchain-import --database lmdb#fastest
 
-$ bittube-blockchain-import --database lmdb#nosync
+$ ipbc-blockchain-import --database lmdb#nosync
 
-$ bittube-blockchain-import --database lmdb#nosync,nometasync
+$ ipbc-blockchain-import --database lmdb#nosync,nometasync
 ```

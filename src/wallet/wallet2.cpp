@@ -91,9 +91,9 @@ using namespace cryptonote;
 // arbitrary, used to generate different hashes from the same input
 #define CHACHA8_KEY_TAIL 0x8c
 
-#define UNSIGNED_TX_PREFIX "BitTube unsigned tx set\004"
-#define SIGNED_TX_PREFIX "BitTube signed tx set\004"
-#define MULTISIG_UNSIGNED_TX_PREFIX "BitTube multisig unsigned tx set\001"
+#define UNSIGNED_TX_PREFIX "IPBC unsigned tx set\004"
+#define SIGNED_TX_PREFIX "IPBC signed tx set\004"
+#define MULTISIG_UNSIGNED_TX_PREFIX "IPBC multisig unsigned tx set\001"
 
 #define RECENT_OUTPUT_RATIO (0.5) // 50% of outputs are from the recent zone
 #define RECENT_OUTPUT_DAYS (1.8) // last 1.8 day makes up the recent zone (taken from monerolink.pdf, Miller et al)
@@ -107,11 +107,11 @@ using namespace cryptonote;
 #define SUBADDRESS_LOOKAHEAD_MAJOR 50
 #define SUBADDRESS_LOOKAHEAD_MINOR 200
 
-#define KEY_IMAGE_EXPORT_FILE_MAGIC "BitTube key image export\002"
+#define KEY_IMAGE_EXPORT_FILE_MAGIC "IPBC key image export\002"
 
-#define MULTISIG_EXPORT_FILE_MAGIC "BitTube multisig export\001"
+#define MULTISIG_EXPORT_FILE_MAGIC "IPBC multisig export\001"
 
-#define OUTPUT_EXPORT_FILE_MAGIC "BitTube output export\003"
+#define OUTPUT_EXPORT_FILE_MAGIC "IPBC output export\003"
 
 #define SEGREGATION_FORK_HEIGHT 1546000
 #define TESTNET_SEGREGATION_FORK_HEIGHT 1000000
@@ -10546,7 +10546,7 @@ std::string wallet2::make_uri(const std::string &address, const std::string &pay
     }
   }
 
-  std::string uri = "bittube:" + address;
+  std::string uri = "ipbc:" + address;
   unsigned int n_fields = 0;
 
   if (!payment_id.empty())
@@ -10575,9 +10575,9 @@ std::string wallet2::make_uri(const std::string &address, const std::string &pay
 //----------------------------------------------------------------------------------------------------
 bool wallet2::parse_uri(const std::string &uri, std::string &address, std::string &payment_id, uint64_t &amount, std::string &tx_description, std::string &recipient_name, std::vector<std::string> &unknown_parameters, std::string &error)
 {
-  if (uri.substr(0, 7) != "bittube:")
+  if (uri.substr(0, 7) != "ipbc:")
   {
-    error = std::string("URI has wrong scheme (expected \"bittube:\"): ") + uri;
+    error = std::string("URI has wrong scheme (expected \"ipbc:\"): ") + uri;
     return false;
   }
 
@@ -10842,7 +10842,7 @@ uint64_t wallet2::get_segregation_fork_height() const
   static const bool use_dns = true;
   if (use_dns)
   {
-    // All four BitTubePulse domains have DNSSEC on and valid
+    // All four IPBCPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
        // TODO
     };

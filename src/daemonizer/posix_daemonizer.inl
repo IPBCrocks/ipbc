@@ -101,7 +101,7 @@ namespace daemonizer
     }
     else
     {
-      //LOG_PRINT_L0("Monero '" << BITTUBE_RELEASE_NAME << "' (v" << BITTUBE_VERSION_FULL);
+      //LOG_PRINT_L0("Monero '" << IPBC_RELEASE_NAME << "' (v" << IPBC_VERSION_FULL);
       return executor.run_interactive(vm);
     }
   }

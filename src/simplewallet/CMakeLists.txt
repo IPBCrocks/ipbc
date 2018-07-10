@@ -62,5 +62,5 @@ target_link_libraries(simplewallet
     ${EXTRA_LIBRARIES})
 set_property(TARGET simplewallet
   PROPERTY
-    OUTPUT_NAME "bittube-wallet-cli")
+    OUTPUT_NAME "ipbc-wallet-cli")
 install(TARGETS simplewallet DESTINATION bin)

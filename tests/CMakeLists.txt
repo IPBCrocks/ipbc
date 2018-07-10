@@ -74,8 +74,8 @@ file(COPY
   data/wallet_9svHk1.keys
   data/wallet_9svHk1
   data/outputs
-  data/unsigned_bittube_tx
-  data/signed_bittube_tx
+  data/unsigned_ipbc_tx
+  data/signed_ipbc_tx
   DESTINATION data)
 
 add_subdirectory(core_tests)

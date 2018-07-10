@@ -755,11 +755,11 @@ namespace cryptonote
     switch (std::atomic_load(&default_decimal_point))
     {
       case CRYPTONOTE_DISPLAY_DECIMAL_POINT:
-        return "bittube";
+        return "ipbc";
       case CRYPTONOTE_DISPLAY_DECIMAL_POINT - 3:
-        return "millitube";
+        return "milliipbc";
       case CRYPTONOTE_DISPLAY_DECIMAL_POINT - 6:
-        return "microtube";
+        return "microipbc";
       default:
         ASSERT_MES_AND_THROW("Invalid decimal point specification: " << default_decimal_point);
     }

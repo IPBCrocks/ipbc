@@ -106,5 +106,5 @@ target_link_libraries(daemon
     ${EXTRA_LIBRARIES})
 set_property(TARGET daemon
   PROPERTY
-    OUTPUT_NAME "bittubed")
+    OUTPUT_NAME "ipbcd")
 install(TARGETS daemon DESTINATION bin)

@@ -42,7 +42,7 @@ endif()
 
 cmake_minimum_required(VERSION 2.8.7)
 
-project(bittube)
+project(ipbc)
 
 function (die msg)
   if (NOT WIN32)

@@ -132,14 +132,14 @@ RUN set -ex && \
 COPY --from=builder /src/build/release/bin/* /usr/local/bin/
 
 # Contains the blockchain
-VOLUME /root/.bittube
+VOLUME /root/.ipbc
 
 # Generate your wallet via accessing the container and run:
 # cd /wallet
-# bittube-wallet-cli
+# ipbc-wallet-cli
 VOLUME /wallet
 
-EXPOSE 18080
-EXPOSE 18081
+EXPOSE 18180
+EXPOSE 18181
 
-ENTRYPOINT ["bittubed", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18081", "--non-interactive", "--confirm-external-bind"] 
+ENTRYPOINT ["ipbcd", "--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18180", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18181", "--non-interactive", "--confirm-external-bind"] 
