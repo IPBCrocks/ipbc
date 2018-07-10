@@ -392,15 +392,15 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("127.0.0.1:34181");
+      full_addrs.insert("127.0.0.1:34281");
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("127.0.0.1:44181");
+      full_addrs.insert("127.0.0.1:44281");
     }
     else
     {
-      full_addrs.insert("127.0.0.1:24181");
+      full_addrs.insert("127.0.0.1:24281");
     }
     return full_addrs;
   }
