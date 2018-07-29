@@ -122,6 +122,7 @@ namespace cryptonote {
     const int target = version < BLOCK_MAJOR_VERSION_2 ? DIFFICULTY_TARGET_V1 : DIFFICULTY_TARGET_V2;
     const int target_minutes = target / 60;
     const int emission_speed_factor = EMISSION_SPEED_FACTOR_PER_MINUTE - (target_minutes-1);
+    const int emission_speed_factor_v5 = EMISSION_SPEED_FACTOR_PER_MINUTE_V5 - (target_minutes-1);
  
     uint64_t full_reward_zone = get_min_block_size(version);
 
@@ -135,7 +136,7 @@ namespace cryptonote {
       return false;
     }
 
-    uint64_t base_reward = (MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor;
+    uint64_t base_reward = (version >= BLOCK_MAJOR_VERSION_5) ? ((MONEY_SUPPLY_V5 - already_generated_coins) >> emission_speed_factor_v5) : ((MONEY_SUPPLY - already_generated_coins) >> emission_speed_factor);
     if (already_generated_coins <= 1636000000000000 && version == BLOCK_MAJOR_VERSION_1) {
       uint64_t bad_tail_emission_reward = uint64_t(1000000000000);
       if (already_generated_coins + bad_tail_emission_reward >= MONEY_SUPPLY || base_reward < bad_tail_emission_reward)
