@@ -400,7 +400,6 @@ namespace nodetool
     }
     else
     {
-      full_addrs.insert("144.217.183.114:24281");
       full_addrs.insert("seed1.ipbc.rocks:24281");
       full_addrs.insert("seed2.ipbc.rocks:24281");
       full_addrs.insert("seed3.ipbc.rocks:24281");
