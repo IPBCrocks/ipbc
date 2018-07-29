@@ -3642,7 +3642,8 @@ leave:
     MDEBUG("Block with id: " << id << " caused coin emission rollback, change: -" << print_money(fee_summary - base_reward));
     already_generated_coins = already_generated_coins - (fee_summary - base_reward);
   } else {
-    already_generated_coins = (base_reward - fee_summary) < (MONEY_SUPPLY-already_generated_coins) ? already_generated_coins + (base_reward - fee_summary) : MONEY_SUPPLY;
+    uint64_t supply = (m_hardfork->get_current_version() >= BLOCK_MAJOR_VERSION_5)? MONEY_SUPPLY_V5 : MONEY_SUPPLY;
+    already_generated_coins = (base_reward - fee_summary) < (supply-already_generated_coins) ? already_generated_coins + (base_reward - fee_summary) : supply;
   }
   if(m_db->height())
     cumulative_difficulty += m_db->get_block_cumulative_difficulty(m_db->height() - 1);
