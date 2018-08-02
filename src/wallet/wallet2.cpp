@@ -1053,6 +1053,16 @@ void wallet2::check_acc_out_precomp(const tx_out &o, const crypto::key_derivatio
   tx_scan_info.error = false;
 }
 //----------------------------------------------------------------------------------------------------
+void wallet2::check_acc_out_precomp_once(const tx_out &o, const crypto::key_derivation &derivation, const std::vector<crypto::key_derivation> &additional_derivations, size_t i, const is_out_data *is_out_data, tx_scan_info_t &tx_scan_info, bool &already_seen) const
+{
+  tx_scan_info.received = boost::none;
+  if (already_seen)
+    return;
+  check_acc_out_precomp(o, derivation, additional_derivations, i, is_out_data, tx_scan_info);
+  if (tx_scan_info.received)
+    already_seen = true;
+}
+//----------------------------------------------------------------------------------------------------
 static uint64_t decodeRct(const rct::rctSig & rv, const crypto::key_derivation &derivation, unsigned int i, rct::key & mask, hw::device &hwdev)
 {
   crypto::secret_key scalar1;
@@ -1169,7 +1179,7 @@ void wallet2::process_new_transaction(const crypto::hash &txid, const cryptonote
   // Don't try to extract tx public key if tx has no ouputs
   size_t pk_index = 0;
   std::vector<tx_scan_info_t> tx_scan_info(tx.vout.size());
-  std::unordered_set<crypto::public_key> public_keys_seen;
+  std::deque<bool> output_found(tx.vout.size(), false);
   while (!tx.vout.empty())
   {
     // if tx.vout is not empty, we loop through all tx pubkeys
@@ -1189,13 +1199,6 @@ void wallet2::process_new_transaction(const crypto::hash &txid, const cryptonote
       THROW_WALLET_EXCEPTION_IF(tx_cache_data.primary.size() < pk_index || pub_key_field.pub_key != tx_cache_data.primary[pk_index - 1].pkey,
           error::wallet_internal_error, "tx_cache_data is out of sync");
     }
-
-    if (public_keys_seen.find(pub_key_field.pub_key) != public_keys_seen.end())
-    {
-      MWARNING("The same transaction pubkey is present more than once, ignoring extra instance");
-      continue;
-    }
-    public_keys_seen.insert(pub_key_field.pub_key);
 
     int num_vouts_received = 0;
     tx_pub_key = pub_key_field.pub_key;
@@ -1260,7 +1263,7 @@ void wallet2::process_new_transaction(const crypto::hash &txid, const cryptonote
     }
     else if (miner_tx && m_refresh_type == RefreshOptimizeCoinbase)
     {
-      check_acc_out_precomp(tx.vout[0], derivation, additional_derivations, 0, is_out_data_ptr, tx_scan_info[0]);
+      check_acc_out_precomp_once(tx.vout[0], derivation, additional_derivations, 0, is_out_data_ptr, tx_scan_info[0], output_found[0]);
       THROW_WALLET_EXCEPTION_IF(tx_scan_info[0].error, error::acc_outs_lookup_error, tx, tx_pub_key, m_account.get_keys());
 
       // this assumes that the miner tx pays a single address
@@ -1270,8 +1273,8 @@ void wallet2::process_new_transaction(const crypto::hash &txid, const cryptonote
         // the first one was already checked
         for (size_t i = 1; i < tx.vout.size(); ++i)
         {
-          tpool.submit(&waiter, boost::bind(&wallet2::check_acc_out_precomp, this, std::cref(tx.vout[i]), std::cref(derivation), std::cref(additional_derivations), i,
-            std::cref(is_out_data_ptr), std::ref(tx_scan_info[i])), true);
+          tpool.submit(&waiter, boost::bind(&wallet2::check_acc_out_precomp_once, this, std::cref(tx.vout[i]), std::cref(derivation), std::cref(additional_derivations), i,
+            std::cref(is_out_data_ptr), std::ref(tx_scan_info[i]), std::ref(output_found[i])), true);
         }
         waiter.wait(&tpool);
         // then scan all outputs from 0
@@ -1293,8 +1296,8 @@ void wallet2::process_new_transaction(const crypto::hash &txid, const cryptonote
     {
       for (size_t i = 0; i < tx.vout.size(); ++i)
       {
-        tpool.submit(&waiter, boost::bind(&wallet2::check_acc_out_precomp, this, std::cref(tx.vout[i]), std::cref(derivation), std::cref(additional_derivations), i,
-            std::cref(is_out_data_ptr), std::ref(tx_scan_info[i])), true);
+        tpool.submit(&waiter, boost::bind(&wallet2::check_acc_out_precomp_once, this, std::cref(tx.vout[i]), std::cref(derivation), std::cref(additional_derivations), i,
+            std::cref(is_out_data_ptr), std::ref(tx_scan_info[i]), std::ref(output_found[i])), true);
       }
       waiter.wait(&tpool);
 
@@ -1315,7 +1318,7 @@ void wallet2::process_new_transaction(const crypto::hash &txid, const cryptonote
     {
       for (size_t i = 0; i < tx.vout.size(); ++i)
       {
-        check_acc_out_precomp(tx.vout[i], derivation, additional_derivations, i, is_out_data_ptr, tx_scan_info[i]);
+        check_acc_out_precomp_once(tx.vout[i], derivation, additional_derivations, i, is_out_data_ptr, tx_scan_info[i], output_found[i]);
         THROW_WALLET_EXCEPTION_IF(tx_scan_info[i].error, error::acc_outs_lookup_error, tx, tx_pub_key, m_account.get_keys());
         if (tx_scan_info[i].received)
         {
@@ -3040,9 +3043,16 @@ bool wallet2::load_keys(const std::string& keys_file_name, const epee::wipeable_
  * can be used prior to rewriting wallet keys file, to ensure user has entered the correct password
  *
  */
-bool wallet2::verify_password(const epee::wipeable_string& password) const
+bool wallet2::verify_password(const epee::wipeable_string& password)
 {
-  return verify_password(m_keys_file, password, m_watch_only || m_multisig, m_account.get_device());
+  // TODO: needed to remove constness to reset lock, can we work around this without releasing the lock?
+  bool r = false;
+  m_keys_file_locker.reset(); // Must reset lock on keys file to be able to verify password on windows
+  try {
+    r = verify_password(m_keys_file, password, m_watch_only || m_multisig, m_account.get_device());
+  } catch (...) { } // catch possible errors in verify_password so we can relock the keys
+  m_keys_file_locker.reset(new tools::file_locker(m_keys_file));
+  return r;
 }
 
 /*!
