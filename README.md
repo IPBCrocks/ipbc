@@ -69,7 +69,7 @@ Debian / Ubuntu one liner for all dependencies
 
 Clone recursively to pull-in needed submodule(s):
 
-`$ git clone --recursive https://github.com/muncoin/ipbc`
+`$ git clone --recursive https://github.com/IPBCrocks/ipbc`
 
 If you already have a repo cloned, initialize and update:
 
